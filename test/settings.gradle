@@ -3,3 +3,4 @@ rootProject.name = "Counters Test"
 include ':domain'
 include ':presentation'
 include ':data'
+include ':remote'
