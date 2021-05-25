@@ -11,4 +11,6 @@ java {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     api project(":domain")
+
+    implementation "io.insert-koin:koin-core:$koin_version"
 }
