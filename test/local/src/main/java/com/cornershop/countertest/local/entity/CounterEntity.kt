@@ -8,5 +8,5 @@ data class CounterEntity(
     @PrimaryKey
     val id: String,
     val title: String,
-    val count: Int
+    var count: Int
 )
