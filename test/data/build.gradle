@@ -8,9 +8,30 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        outputs.upToDateWhen { false }
+        showStandardStreams = false
+
+        afterSuite { desc, result ->
+            if (!desc.parent) { // will match the outermost suite
+                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+                def startItem = '|  ', endItem = '  |'
+                def repeatLength = startItem.length() + output.length() + endItem.length()
+                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+            }
+        }
+    }
+}
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     api project(":domain")
 
     implementation "io.insert-koin:koin-core:$koin_version"
+
+    testImplementation "junit:junit:4.+"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$courotines_test_version"
 }
