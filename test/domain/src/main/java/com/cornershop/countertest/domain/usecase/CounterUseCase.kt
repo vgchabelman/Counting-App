@@ -10,4 +10,12 @@ class CounterUseCase(private val repository: ICounterRepository) {
     suspend fun saveCounter(title: String) {
         repository.saveCounter(Counter("", title, 0))
     }
+
+    suspend fun incrementCounter(counter: Counter): List<Counter> {
+        return repository.incrementCounter(counter)
+    }
+
+    suspend fun decrementCounter(counter: Counter): List<Counter> {
+        return repository.decrementCounter(counter)
+    }
 }

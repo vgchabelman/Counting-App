@@ -28,8 +28,8 @@
 —Willie Nelson</string>
     <string name="search_counters">Search Counters</string>
     <string name="add_counters">Add counters</string>
-    <string name="n_items">%d items</string>
-    <string name="n_times">%d times</string>
+    <string name="n_items" formatted="false">%d items</string>
+    <string name="n_times" formatted="false">%d times</string>
     <string name="n_selected">%d selected</string>
     <string name="error_load_counters_title">Couldn’t load the counters</string>
     <string name="error_creating_counter_title">Couldn’t create the counter</string>

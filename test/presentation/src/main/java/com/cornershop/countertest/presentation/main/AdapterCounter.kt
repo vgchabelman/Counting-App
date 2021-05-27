@@ -9,7 +9,10 @@ import com.cornershop.countertest.domain.model.Counter
 import com.cornershop.countertest.presentation.R
 import com.cornershop.countertest.presentation.databinding.ItemMainCounterBinding
 
-class AdapterCounter : RecyclerView.Adapter<AdapterCounter.ViewHolder>() {
+class AdapterCounter(
+    val minusListener: (counter: Counter) -> Unit,
+    val plusListener: (counter: Counter) -> Unit,
+) : RecyclerView.Adapter<AdapterCounter.ViewHolder>() {
     private val counterList = mutableListOf<Counter>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,6 +25,9 @@ class AdapterCounter : RecyclerView.Adapter<AdapterCounter.ViewHolder>() {
 
         holder.binding.counterTitle.text = counter.title
         holder.binding.counterNum.text = counter.count.toString()
+        holder.binding.minus.isEnabled = counter.count > 0
+        holder.binding.minus.setOnClickListener { minusListener.invoke(counter) }
+        holder.binding.plus.setOnClickListener { plusListener.invoke(counter) }
     }
 
     override fun getItemCount(): Int = counterList.size

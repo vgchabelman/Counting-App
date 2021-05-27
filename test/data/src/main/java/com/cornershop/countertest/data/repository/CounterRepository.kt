@@ -28,4 +28,16 @@ class CounterRepository(
             remote.removeCounter(it)
         }
     }
+
+    override suspend fun incrementCounter(counter: Counter): List<Counter> {
+        val list = remote.increment(counter)
+        local.increment(counter)
+        return list
+    }
+
+    override suspend fun decrementCounter(counter: Counter): List<Counter> {
+        val list = remote.decrement(counter)
+        local.decrement(counter)
+        return list
+    }
 }

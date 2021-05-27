@@ -22,13 +22,14 @@
 
     <TextView
         android:id="@+id/minus"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/min_clickable_area"
+        android:layout_height="@dimen/min_clickable_area"
         android:background="?selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
         android:text="-"
-        android:textColor="@color/orange"
+        android:textColor="@drawable/co_minus_txt"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/counterNum"
         app:layout_constraintTop_toTopOf="@id/counterTitle"
@@ -48,11 +49,12 @@
 
     <TextView
         android:id="@+id/plus"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/min_clickable_area"
+        android:layout_height="@dimen/min_clickable_area"
         android:layout_marginEnd="@dimen/margin_normal_1"
         android:background="?selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
         android:text="+"
         android:textColor="@color/orange"
