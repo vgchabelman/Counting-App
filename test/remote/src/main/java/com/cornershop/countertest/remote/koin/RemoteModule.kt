@@ -7,7 +7,7 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val BASE_URL = "localhost:3000/api/v1/"
+const val BASE_URL = "http://localhost:3000/api/v1/"
 
 val remoteModule = module {
     single { GsonBuilder().setLenient().create() }

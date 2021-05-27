@@ -16,15 +16,15 @@ class CountingApplication : Application() {
         startKoin {
             androidContext(this@CountingApplication)
 
-            module {
+            modules(
                 listOf(
-                    presentationModule,
                     domainModule,
-                    dataModule,
                     localModule,
-                    remoteModule
+                    remoteModule,
+                    dataModule,
+                    presentationModule,
                 )
-            }
+            )
         }
     }
 }

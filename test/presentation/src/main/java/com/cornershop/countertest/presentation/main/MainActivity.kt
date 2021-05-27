@@ -2,11 +2,11 @@ package com.cornershop.countertest.presentation.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import br.com.chabelman.presentation.R
 import com.cornershop.countertest.domain.model.CounterListState
+import com.cornershop.countertest.presentation.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity: AppCompatActivity(R.layout.activity_main), MainContract.MainView {
+class MainActivity : AppCompatActivity(R.layout.activity_main), MainContract.MainView {
     private val presenter: MainPresenter by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,8 +27,9 @@ class MainActivity: AppCompatActivity(R.layout.activity_main), MainContract.Main
     }
 
     override fun render(state: CounterListState) {
-        when(state) {
-            is CounterListState.LoadingState -> { }
+        when (state) {
+            is CounterListState.LoadingState -> {
+            }
             is CounterListState.DataState -> TODO()
             is CounterListState.ErrorState -> TODO()
         }

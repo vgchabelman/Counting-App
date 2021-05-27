@@ -10,5 +10,6 @@ interface MainContract {
     interface MainPresenter {
         fun bind(view: MainView)
         fun unbind()
+        fun updateCounterList()
     }
 }
