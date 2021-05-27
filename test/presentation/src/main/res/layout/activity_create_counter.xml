@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+
+    <ImageButton
+        android:id="@+id/close"
+        android:layout_width="@dimen/min_clickable_area"
+        android:layout_height="@dimen/min_clickable_area"
+        android:layout_margin="8dp"
+        android:background="@null"
+        android:contentDescription="@string/close_button_description"
+        android:src="@drawable/ic_close"
+        app:layout_constraintBottom_toBottomOf="@+id/saveButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/saveButton" />
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_normal_2"
+        android:text="@string/create_counter"
+        app:layout_constraintBottom_toBottomOf="@+id/saveButton"
+        app:layout_constraintStart_toEndOf="@+id/close"
+        app:layout_constraintTop_toTopOf="@+id/saveButton" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:text="@string/save"
+        android:textColor="@color/orange"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/saveLoad"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/orange"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/saveButton"
+        app:layout_constraintEnd_toEndOf="@+id/saveButton"
+        app:layout_constraintStart_toStartOf="@+id/saveButton"
+        app:layout_constraintTop_toTopOf="@+id/saveButton" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_normal_1"
+        android:layout_marginTop="@dimen/margin_big_1"
+        android:hint="@string/counter_name_label"
+        app:boxBackgroundColor="@android:color/transparent"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/orange"
+        app:layout_constraintTop_toBottomOf="@+id/close"
+        app:placeholderText="@string/counter_name_hint"
+        app:placeholderTextColor="@color/light_gray">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLength="140"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal_2"
+        android:text="@string/create_counter_disclaimer"
+        android:textColor="@color/gray"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+</androidx.constraintlayout.widget.ConstraintLayout>

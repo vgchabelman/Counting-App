@@ -1,4 +1,4 @@
-package com.cornershop.countertest.data.repository
+package com.cornershop.countertest.domain
 
 import java.lang.Exception
 
