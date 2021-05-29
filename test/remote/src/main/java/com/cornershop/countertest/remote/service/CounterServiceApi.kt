@@ -6,6 +6,7 @@ import com.cornershop.countertest.remote.dto.CreateCounterRequestDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.POST
 
 interface CounterServiceApi {
@@ -22,6 +23,6 @@ interface CounterServiceApi {
     @POST("counter/dec")
     suspend fun decrement(@Body request: CounterRequestDto): List<CounterDto>
 
-    @DELETE("counter")
+    @HTTP(method = "DELETE",path = "counter", hasBody = true)
     suspend fun removeCounter(@Body request: CounterRequestDto): List<CounterDto>
 }

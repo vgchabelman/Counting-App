@@ -7,4 +7,5 @@ interface ICounterRepository {
     suspend fun saveCounter(counter: Counter)
     suspend fun incrementCounter(counter: Counter): List<Counter>
     suspend fun decrementCounter(counter: Counter): List<Counter>
+    suspend fun deleteCounter(counter: Counter)
 }

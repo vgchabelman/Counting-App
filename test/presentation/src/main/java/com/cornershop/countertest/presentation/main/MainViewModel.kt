@@ -1,5 +1,6 @@
 package com.cornershop.countertest.presentation.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,7 +14,6 @@ import com.cornershop.countertest.domain.model.CounterView
 import com.cornershop.countertest.domain.usecase.CounterUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.ClassCastException
 
 class MainViewModel(
     private val useCase: CounterUseCase
@@ -56,17 +56,24 @@ class MainViewModel(
 
                 _counterListState.postValue(CounterListState.DataState(list))
             } catch (e: NoInternetException) {
-                _counterUpdateState.postValue(CounterUpdateState.ErrorState(
-                    false, counter, increment))
+                _counterUpdateState.postValue(
+                    CounterUpdateState.ErrorState(
+                        false, counter, increment
+                    )
+                )
             } catch (e: Exception) {
-                _counterUpdateState.postValue(CounterUpdateState.ErrorState(
-                    counter = counter, increment = increment))
+                _counterUpdateState.postValue(
+                    CounterUpdateState.ErrorState(
+                        counter = counter, increment = increment
+                    )
+                )
             }
         }
     }
 
     fun changeStateToSelect(counter: Counter) {
-        val counterList = (counterListState.value as CounterListState.DataState).data.toCounterView()
+        val counterList =
+            (counterListState.value as CounterListState.DataState).data.toCounterView()
         counterList.find { it.counter.id == counter.id }?.selected = true
         _selectedState.postValue(CounterSelectedState.ChangeState(counterList))
     }
@@ -77,7 +84,7 @@ class MainViewModel(
         } catch (e: ClassCastException) {
             (selectedState.value as CounterSelectedState.ChangeState).data
         }.map { it.copy() }
-        selectedList.find { it.counter.id ==  counter.id }?.let {
+        selectedList.find { it.counter.id == counter.id }?.let {
             it.selected = it.selected.not()
         }
         if (selectedList.none { it.selected }) {
@@ -87,9 +94,43 @@ class MainViewModel(
         _selectedState.postValue(CounterSelectedState.DataState(selectedList))
     }
 
+    fun selectDelete() {
+        val selectedList = try {
+            (selectedState.value as CounterSelectedState.DataState).data
+        } catch (e: ClassCastException) {
+            (selectedState.value as CounterSelectedState.ChangeState).data
+        }
+        _selectedState.postValue(CounterSelectedState.DeleteState(selectedList))
+    }
+
+    fun cancelDelete(selectedList: List<CounterView>) {
+        _selectedState.postValue(CounterSelectedState.DataState(selectedList))
+    }
+
+    fun deleteCounters(selectedList: List<CounterView>) {
+        viewModelScope.launch {
+            try {
+                useCase.deleteCounters(selectedList.filter { it.selected }.toCounter())
+                _selectedState.postValue(CounterSelectedState.SuccessState)
+            } catch (e: NoInternetException) {
+                _selectedState.postValue(CounterSelectedState
+                    .DeleteErrorState(selectedList, false))
+            } catch (e: Exception) {
+                _selectedState.postValue(CounterSelectedState.DeleteErrorState(selectedList))
+                Log.e("CounterError", e.message.toString())
+            }
+        }
+    }
+
     private fun List<Counter>.toCounterView(): List<CounterView> {
         return this.map {
             CounterView(it, false)
+        }
+    }
+
+    private fun List<CounterView>.toCounter(): List<Counter> {
+        return this.map {
+            it.counter
         }
     }
 }

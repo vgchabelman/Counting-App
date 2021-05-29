@@ -27,11 +27,13 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.mainCounter.mainCounterList.adapter = adapterCounter
 
+        binding.mainCounter.mainCounterList.adapter = adapterCounter
         binding.addCounterButton.setOnClickListener {
             startActivity(Intent(this, CreateCounterActivity::class.java))
         }
+        setupSelectedMenu()
+
         observeState()
     }
 
@@ -61,11 +63,13 @@ class MainActivity : AppCompatActivity() {
                 is CounterSelectedState.ChangeState -> handleSelectedChangeState(state)
                 is CounterSelectedState.SuccessState -> handleSelectedSuccessState()
                 is CounterSelectedState.DataState -> handleSelectedDataState(state)
-                is CounterSelectedState.ErrorState -> TODO()
+                is CounterSelectedState.DeleteErrorState -> handleSelectedErrorState(state)
+                is CounterSelectedState.DeleteState -> handleSelectDeleteState(state)
             }
         }
     }
 
+    //region CounterListState
     private fun handleLoadingState() {
         binding.mainLoading.loading.show()
         binding.mainNoCounters.root.isVisible = false
@@ -99,7 +103,9 @@ class MainActivity : AppCompatActivity() {
         binding.mainNoCounters.root.isVisible = false
         binding.mainCounter.mainCounterSwipe.isVisible = false
     }
+    //endregion
 
+    //region CounterUpdateState
     private fun handleErrorStateUpdate(state: CounterUpdateState.ErrorState) {
         val target = if (state.increment) {
             state.counter.count + 1
@@ -111,20 +117,18 @@ class MainActivity : AppCompatActivity() {
             state.counter.title,
             target
         )
-        val message = if (state.hasInternet) {
-            R.string.generic_error_description
-        } else {
-            R.string.connection_error_description
-        }
         AlertDialog.Builder(this)
             .setTitle(title)
-            .setMessage(message)
+            .setMessage(errorMessage(state.hasInternet))
             .setPositiveButton(android.R.string.ok, null)
             .create()
             .show()
     }
+    //endregion
 
+    //region CounterSelectState
     private fun handleSelectedChangeState(state: CounterSelectedState.ChangeState) {
+        binding.mainSelected.root.isVisible = true
         binding.mainCounter.mainCounterList.adapter = adapterSelected
         binding.addCounterButton
             .animate()
@@ -133,17 +137,50 @@ class MainActivity : AppCompatActivity() {
         binding.search.animate()
             .translationY(binding.search.height * -3f)
             .start()
+        binding.mainSelected.selectedToolbar.title = getString(R.string.n_selected, 1)
         adapterSelected.updateCounterList(state.data)
     }
 
     private fun handleSelectedDataState(state: CounterSelectedState.DataState) {
         adapterSelected.updateCounterList(state.data)
+        binding.mainSelected.selectedToolbar.title = getString(
+            R.string.n_selected,
+            state.data.filter { it.selected }.size
+        )
     }
 
     private fun handleSelectedSuccessState() {
+        binding.mainSelected.root.isVisible = false
         binding.addCounterButton.animate().translationY(0f).start()
         binding.search.animate().translationY(0f).start()
         viewModel.updateCounterList()
+    }
+
+    private fun handleSelectedErrorState(state: CounterSelectedState.DeleteErrorState) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.error_deleting_counter_title)
+            .setMessage(errorMessage(state.hasInternet))
+            .setPositiveButton(android.R.string.ok) { _, _ -> viewModel.cancelDelete(state.data) }
+            .create()
+            .show()
+    }
+
+    private fun handleSelectDeleteState(state: CounterSelectedState.DeleteState): Boolean {
+        val selectedList = state.data.filter { it.selected }
+        val message = if (selectedList.size == 1) {
+            getString(R.string.delete_x_question, selectedList[0].counter.title)
+        } else {
+            getString(R.string.delete_n_questions, selectedList.size)
+        }
+
+        AlertDialog.Builder(this)
+            .setMessage(message)
+            .setPositiveButton(R.string.delete) { _, _ -> viewModel.deleteCounters(state.data) }
+            .setNegativeButton(android.R.string.cancel) { _, _ -> viewModel.cancelDelete(state.data) }
+            .create()
+            .show()
+
+        return true
     }
 
     private fun setupAdapter(): AdapterCounter {
@@ -164,5 +201,31 @@ class MainActivity : AppCompatActivity() {
         return AdapterSelected { counter ->
             viewModel.selectCounter(counter)
         }
+    }
+
+    private fun setupSelectedMenu() {
+        binding.mainSelected.selectedToolbar.inflateMenu(R.menu.menu_main)
+        binding.mainSelected.selectedToolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.share -> shareCounters()
+                R.id.delete -> {
+                    viewModel.selectDelete()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun shareCounters(): Boolean {
+
+        return true
+    }
+//endregion
+
+    private fun errorMessage(hasInternet: Boolean): Int = if (hasInternet) {
+        R.string.generic_error_description
+    } else {
+        R.string.connection_error_description
     }
 }

@@ -18,4 +18,10 @@ class CounterUseCase(private val repository: ICounterRepository) {
     suspend fun decrementCounter(counter: Counter): List<Counter> {
         return repository.decrementCounter(counter)
     }
+
+    suspend fun deleteCounters(counterList: List<Counter>) {
+        counterList.forEach { counter ->
+            repository.deleteCounter(counter)
+        }
+    }
 }

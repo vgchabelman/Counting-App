@@ -40,4 +40,9 @@ class CounterRepository(
         local.decrement(counter)
         return list
     }
+
+    override suspend fun deleteCounter(counter: Counter) {
+        remote.removeCounter(counter)
+        local.removeCounter(counter)
+    }
 }
