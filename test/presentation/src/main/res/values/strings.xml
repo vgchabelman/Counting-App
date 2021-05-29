@@ -52,7 +52,7 @@
     <string name="create_counter_disclaimer">Give it a name. Creative block? See examples.</string>
     <string name="delete_x_question" formatted="false">Delete "%s"?</string>
     <string name="delete_n_questions" formatted="false">Delete %d counters"?</string>
-    <string name="n_per_counter_name">%d × %s</string>
+    <string name="n_per_counter_name"  formatted="false">%d × %s</string>
     <string name="add_counter">ADD COUNTER</string>
     <string name="close_button_description">Close button</string>
 </resources>

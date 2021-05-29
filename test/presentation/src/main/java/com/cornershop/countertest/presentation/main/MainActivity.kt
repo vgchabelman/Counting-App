@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
                 is CounterSelectedState.DataState -> handleSelectedDataState(state)
                 is CounterSelectedState.DeleteErrorState -> handleSelectedErrorState(state)
                 is CounterSelectedState.DeleteState -> handleSelectDeleteState(state)
+                is CounterSelectedState.ShareState -> handleSelectShareState(state)
             }
         }
     }
@@ -165,7 +166,7 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun handleSelectDeleteState(state: CounterSelectedState.DeleteState): Boolean {
+    private fun handleSelectDeleteState(state: CounterSelectedState.DeleteState) {
         val selectedList = state.data.filter { it.selected }
         val message = if (selectedList.size == 1) {
             getString(R.string.delete_x_question, selectedList[0].counter.title)
@@ -179,8 +180,28 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton(android.R.string.cancel) { _, _ -> viewModel.cancelDelete(state.data) }
             .create()
             .show()
+    }
 
-        return true
+    private fun handleSelectShareState(state: CounterSelectedState.ShareState) {
+        try {
+            val selectedList = state.data.filter { it.selected }
+            var message = ""
+            selectedList.forEach {
+                message += getString(R.string.n_per_counter_name, it.counter.count, it.counter.title) + "\n"
+            }
+            message.removeSuffix("\n")
+
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, message)
+                type = "text/plain"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
+            viewModel.endShare(true, state.data)
+        } catch (e: Exception) {
+            viewModel.endShare(false, state.data)
+        }
     }
 
     private fun setupAdapter(): AdapterCounter {
@@ -207,7 +228,10 @@ class MainActivity : AppCompatActivity() {
         binding.mainSelected.selectedToolbar.inflateMenu(R.menu.menu_main)
         binding.mainSelected.selectedToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.share -> shareCounters()
+                R.id.share -> {
+                    viewModel.selectShare()
+                    true
+                }
                 R.id.delete -> {
                     viewModel.selectDelete()
                     true
@@ -216,12 +240,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun shareCounters(): Boolean {
-
-        return true
-    }
-//endregion
+    //endregion
 
     private fun errorMessage(hasInternet: Boolean): Int = if (hasInternet) {
         R.string.generic_error_description

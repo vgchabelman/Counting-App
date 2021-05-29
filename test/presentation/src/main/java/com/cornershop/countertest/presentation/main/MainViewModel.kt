@@ -122,6 +122,23 @@ class MainViewModel(
         }
     }
 
+    fun selectShare() {
+        val selectedList = try {
+            (selectedState.value as CounterSelectedState.DataState).data
+        } catch (e: ClassCastException) {
+            (selectedState.value as CounterSelectedState.ChangeState).data
+        }
+        _selectedState.postValue(CounterSelectedState.ShareState(selectedList))
+    }
+
+    fun endShare(success: Boolean, selectedList: List<CounterView>) {
+        if (success) {
+            _selectedState.postValue(CounterSelectedState.SuccessState)
+        } else {
+            _selectedState.postValue(CounterSelectedState.DataState(selectedList))
+        }
+    }
+
     private fun List<Counter>.toCounterView(): List<CounterView> {
         return this.map {
             CounterView(it, false)
