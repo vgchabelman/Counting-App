@@ -2,12 +2,13 @@ package com.cornershop.counterstest
 
 import android.app.Application
 import com.cornershop.countertest.local.koin.localModule
+import com.cornershop.countertest.presentation.koin.presentationModule
 import com.cornershop.countertest.remote.koin.remoteModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
-class CountingApplication: Application() {
+class CountingApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -15,13 +16,15 @@ class CountingApplication: Application() {
         startKoin {
             androidContext(this@CountingApplication)
 
-            module {
+            modules(
                 listOf(
-                    dataModule,
+                    domainModule,
                     localModule,
-                    remoteModule
+                    remoteModule,
+                    dataModule,
+                    presentationModule,
                 )
-            }
+            )
         }
     }
 }

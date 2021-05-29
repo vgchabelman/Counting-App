@@ -6,4 +6,6 @@
     <dimen name="margin_normal_1">16dp</dimen>
     <dimen name="margin_normal_2">24dp</dimen>
     <dimen name="margin_normal_3">32dp</dimen>
+
+    <dimen name="min_clickable_area">40dp</dimen>
 </resources>

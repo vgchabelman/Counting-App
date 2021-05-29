@@ -1,7 +1,9 @@
 package com.cornershop.countertest.data.repository
 
 import com.cornershop.countertest.data.datasource.ICounterDataSource
+import com.cornershop.countertest.domain.NoInternetException
 import com.cornershop.countertest.domain.model.Counter
+import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,9 +20,13 @@ class CounterRepositoryTest {
 
     @Mock
     lateinit var localMockDataSource: ICounterDataSource
+
     @Mock
     lateinit var remoteMockDataSource: ICounterDataSource
     lateinit var repository: CounterRepository
+
+    private val apiMockResponse = listOf(Counter("test", "test", 0))
+    private val cacheMockResponse = listOf(Counter("test2", "test2", 1))
 
     @Before
     fun setup() {
@@ -33,10 +39,20 @@ class CounterRepositoryTest {
     @Test
     fun `it should return api results`() {
         runBlockingTest {
-            val mockList = listOf(Counter("test", "test", 0))
-            whenever(remoteMockDataSource.getCounters()).thenAnswer { mockList }
+            whenever(remoteMockDataSource.getCounters()).thenAnswer { apiMockResponse }
+            whenever(localMockDataSource.getCounters()).thenAnswer { cacheMockResponse }
             val result = repository.getAllCounters()
-            Assert.assertEquals(mockList, result)
+            Assert.assertEquals(apiMockResponse, result)
+        }
+    }
+
+    @Test
+    fun `it should return cache results`() {
+        runBlockingTest {
+            whenever(localMockDataSource.getCounters()).thenAnswer { cacheMockResponse }
+            given(remoteMockDataSource.getCounters()).willAnswer { throw NoInternetException() }
+            val result = repository.getAllCounters()
+            Assert.assertEquals(cacheMockResponse, result)
         }
     }
 }

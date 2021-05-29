@@ -1,7 +1,7 @@
 package com.cornershop.countertest.remote.datasource
 
 import com.cornershop.countertest.data.datasource.ICounterDataSource
-import com.cornershop.countertest.data.repository.NoInternetException
+import com.cornershop.countertest.domain.NoInternetException
 import com.cornershop.countertest.domain.model.Counter
 import com.cornershop.countertest.remote.dto.CounterRequestDto
 import com.cornershop.countertest.remote.dto.CreateCounterRequestDto

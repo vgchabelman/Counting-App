@@ -28,9 +28,9 @@
 —Willie Nelson</string>
     <string name="search_counters">Search Counters</string>
     <string name="add_counters">Add counters</string>
-    <string name="n_items">%d items</string>
-    <string name="n_times">%d times</string>
-    <string name="n_selected">%d selected</string>
+    <string name="n_items" formatted="false">%d items</string>
+    <string name="n_times" formatted="false">%d times</string>
+    <string name="n_selected" formatted="false">%d selected</string>
     <string name="error_load_counters_title">Couldn’t load the counters</string>
     <string name="error_creating_counter_title">Couldn’t create the counter</string>
     <string name="error_updating_counter_title">Couldn’t update the “%s” counter to %d</string>
@@ -50,6 +50,9 @@
     <string name="counter_name_label">Name</string>
     <string name="counter_name_hint">Cups of coffee</string>
     <string name="create_counter_disclaimer">Give it a name. Creative block? See examples.</string>
-    <string name="delete_x_question">Delete "%s"?</string>
-    <string name="n_per_counter_name">%d × %s</string>
+    <string name="delete_x_question" formatted="false">Delete "%s"?</string>
+    <string name="delete_n_questions" formatted="false">Delete %d counters"?</string>
+    <string name="n_per_counter_name"  formatted="false">%d × %s</string>
+    <string name="add_counter">ADD COUNTER</string>
+    <string name="close_button_description">Close button</string>
 </resources>
