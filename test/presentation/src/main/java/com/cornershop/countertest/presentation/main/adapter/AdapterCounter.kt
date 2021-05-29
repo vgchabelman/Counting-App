@@ -1,4 +1,4 @@
-package com.cornershop.countertest.presentation.main
+package com.cornershop.countertest.presentation.main.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.cornershop.countertest.domain.model.Counter
+import com.cornershop.countertest.domain.model.CounterView
 import com.cornershop.countertest.presentation.R
 import com.cornershop.countertest.presentation.databinding.ItemMainCounterBinding
 
 class AdapterCounter(
     val minusListener: (counter: Counter) -> Unit,
     val plusListener: (counter: Counter) -> Unit,
+    val selectedListener: (counter: Counter) -> Unit
 ) : RecyclerView.Adapter<AdapterCounter.ViewHolder>() {
     private val counterList = mutableListOf<Counter>()
 
@@ -28,6 +30,10 @@ class AdapterCounter(
         holder.binding.minus.isEnabled = counter.count > 0
         holder.binding.minus.setOnClickListener { minusListener.invoke(counter) }
         holder.binding.plus.setOnClickListener { plusListener.invoke(counter) }
+        holder.binding.root.setOnLongClickListener {
+            selectedListener.invoke(counter)
+            true
+        }
     }
 
     override fun getItemCount(): Int = counterList.size

@@ -2,21 +2,24 @@ package com.cornershop.countertest.presentation.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.cornershop.countertest.domain.model.Counter
 import com.cornershop.countertest.domain.model.CounterListState
+import com.cornershop.countertest.domain.model.CounterSelectedState
 import com.cornershop.countertest.domain.model.CounterUpdateState
 import com.cornershop.countertest.presentation.R
 import com.cornershop.countertest.presentation.create.CreateCounterActivity
 import com.cornershop.countertest.presentation.databinding.ActivityMainBinding
+import com.cornershop.countertest.presentation.main.adapter.AdapterCounter
+import com.cornershop.countertest.presentation.main.adapter.AdapterSelected
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
     private val adapterCounter = setupAdapter()
+    private val adapterSelected by lazy { setupSelectedAdapter() }
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,10 +52,17 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.counterUpdateState.observe(this) { state ->
             when (state) {
-                is CounterUpdateState.DataState -> handleDataState(state.data)
                 is CounterUpdateState.ErrorState -> handleErrorStateUpdate(state)
             }
+        }
 
+        viewModel.selectedState.observe(this) { state ->
+            when (state) {
+                is CounterSelectedState.ChangeState -> handleSelectedChangeState(state)
+                is CounterSelectedState.SuccessState -> handleSelectedSuccessState()
+                is CounterSelectedState.DataState -> handleSelectedDataState(state)
+                is CounterSelectedState.ErrorState -> TODO()
+            }
         }
     }
 
@@ -77,6 +87,9 @@ class MainActivity : AppCompatActivity() {
         binding.mainCounter.counterCount.text = getString(R.string.n_items, counters.size)
         binding.mainCounter.counterSum.text =
             getString(R.string.n_times, counters.sumBy { it.count })
+        if (binding.mainCounter.mainCounterList.adapter !is AdapterCounter) {
+            binding.mainCounter.mainCounterList.adapter = adapterCounter
+        }
         adapterCounter.updateCounterList(counters)
     }
 
@@ -111,6 +124,28 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun handleSelectedChangeState(state: CounterSelectedState.ChangeState) {
+        binding.mainCounter.mainCounterList.adapter = adapterSelected
+        binding.addCounterButton
+            .animate()
+            .translationY(binding.addCounterButton.height * 3f)
+            .start()
+        binding.search.animate()
+            .translationY(binding.search.height * -3f)
+            .start()
+        adapterSelected.updateCounterList(state.data)
+    }
+
+    private fun handleSelectedDataState(state: CounterSelectedState.DataState) {
+        adapterSelected.updateCounterList(state.data)
+    }
+
+    private fun handleSelectedSuccessState() {
+        binding.addCounterButton.animate().translationY(0f).start()
+        binding.search.animate().translationY(0f).start()
+        viewModel.updateCounterList()
+    }
+
     private fun setupAdapter(): AdapterCounter {
         return AdapterCounter(
             minusListener = {
@@ -118,7 +153,16 @@ class MainActivity : AppCompatActivity() {
             },
             plusListener = {
                 viewModel.updateCounter(it, true)
+            },
+            selectedListener = { counter ->
+                viewModel.changeStateToSelect(counter)
             }
         )
+    }
+
+    private fun setupSelectedAdapter(): AdapterSelected {
+        return AdapterSelected { counter ->
+            viewModel.selectCounter(counter)
+        }
     }
 }
