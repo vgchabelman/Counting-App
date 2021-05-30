@@ -19,13 +19,13 @@ class CounterRepository(
     }
 
     override suspend fun saveCounter(counter: Counter) {
-        val oldList = remote.getCounters()
-        val list = remote.addCounter(counter)
-        list.filterNot { oldList.contains(it) }.forEach {
+        val localList = local.getCounters()
+        val remoteList = remote.addCounter(counter)
+        remoteList.filterNot { localList.contains(it) }.forEach {
             local.addCounter(it)
         }
-        remote.getCounters().filterNot { list.contains(it) }.forEach {
-            remote.removeCounter(it)
+        localList.filterNot { remoteList.contains(it) }.forEach {
+            local.removeCounter(it)
         }
     }
 

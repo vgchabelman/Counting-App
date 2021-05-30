@@ -1,5 +1,6 @@
 package com.cornershop.countertest.presentation.create
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +9,8 @@ import com.cornershop.countertest.domain.model.CounterSaveState
 import com.cornershop.countertest.presentation.R
 import com.cornershop.countertest.presentation.databinding.ActivityCreateCounterBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
+private const val REQUEST_CODE = 99
 
 class CreateCounterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreateCounterBinding
@@ -22,13 +25,28 @@ class CreateCounterActivity : AppCompatActivity() {
         binding.saveButton.setOnClickListener {
             viewModel.saveCounter(binding.title.text.toString())
         }
+        binding.examplesButton.setOnClickListener {
+            startActivityForResult(
+                Intent(this, ExamplesActivity::class.java),
+                REQUEST_CODE
+            )
+        }
+
         binding.close.setOnClickListener { finish() }
         observe()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE && resultCode == ExamplesActivity.RESULT_CODE) {
+            binding.title.setText(data?.getStringExtra(ExamplesActivity.RESULT_EXAMPLE_KEY))
+        }
+    }
+
     private fun observe() {
         viewModel.counterSaveState.observe(this) { state ->
-            when(state) {
+            when (state) {
                 is CounterSaveState.Loading -> {
                     binding.saveButton.isVisible = false
                     binding.saveLoad.isVisible = true

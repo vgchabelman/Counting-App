@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cornershop.countertest.presentation">
 
-    <application>
+    <application android:theme="@style/Theme.CountersNormal">
         <activity
             android:name=".welcome.WelcomeActivity"
             android:theme="@style/Theme.CountersWelcome">
@@ -13,9 +13,14 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".main.MainActivity" />
+        <activity android:name=".main.MainActivity" />
 
-        <activity android:name=".create.CreateCounterActivity" />
+        <activity
+            android:name=".create.CreateCounterActivity"
+            android:theme="@style/Theme.CountersCreate" />
+
+        <activity
+            android:name=".create.ExamplesActivity"
+            android:parentActivityName=".create.CreateCounterActivity" />
     </application>
 </manifest>
