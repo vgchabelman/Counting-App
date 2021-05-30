@@ -10,7 +10,7 @@
         android:layout_width="@dimen/min_clickable_area"
         android:layout_height="@dimen/min_clickable_area"
         android:layout_margin="8dp"
-        android:background="@null"
+        android:background="?selectableItemBackground"
         android:contentDescription="@string/close_button_description"
         android:src="@drawable/ic_close"
         app:layout_constraintBottom_toBottomOf="@+id/saveButton"
@@ -76,8 +76,10 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
+        android:id="@+id/examplesButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/min_clickable_area"
+        android:gravity="center_vertical"
         android:layout_marginTop="@dimen/margin_normal_2"
         android:text="@string/create_counter_disclaimer"
         android:textColor="@color/gray"
