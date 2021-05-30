@@ -18,6 +18,16 @@
         <item name="android:windowBackground">@color/welcome_background</item>
     </style>
 
+    <style name="Theme.CountersCreate" parent="Theme.CountersNormal">
+        <item name="colorOnSurface">@color/orange</item>
+    </style>
+
+    <style name="Widget.Counters.TextInput" parent="Theme.CountersNormal">
+        <item name="colorControlNormal">@color/orange</item>
+        <item name="colorControlActivated">@color/orange</item>
+        <item name="colorControlHighlight">@color/orange</item>
+    </style>
+
     <style name="Theme.CountersNormal.Cta" parent="Theme.CountersNormal">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

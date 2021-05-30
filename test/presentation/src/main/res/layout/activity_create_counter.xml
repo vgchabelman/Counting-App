@@ -60,6 +60,8 @@
         app:boxBackgroundColor="@android:color/transparent"
         app:hintEnabled="true"
         app:hintTextColor="@color/orange"
+        android:textColorHint="@color/orange"
+        android:theme="@style/Widget.Counters.TextInput"
         app:layout_constraintTop_toBottomOf="@+id/close"
         app:placeholderText="@string/counter_name_hint"
         app:placeholderTextColor="@color/light_gray">

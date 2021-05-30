@@ -15,7 +15,9 @@
 
         <activity android:name=".main.MainActivity" />
 
-        <activity android:name=".create.CreateCounterActivity" />
+        <activity
+            android:name=".create.CreateCounterActivity"
+            android:theme="@style/Theme.CountersCreate" />
 
         <activity
             android:name=".create.ExamplesActivity"
