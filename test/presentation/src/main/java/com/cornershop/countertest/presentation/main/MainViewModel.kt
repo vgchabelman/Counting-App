@@ -139,6 +139,11 @@ class MainViewModel(
         }
     }
 
+    fun searchResults(query: String): List<Counter> {
+        val list = (_counterListState.value as CounterListState.DataState).data
+        return list.filter { it.title.contains(query, true) }
+    }
+
     private fun List<Counter>.toCounterView(): List<CounterView> {
         return this.map {
             CounterView(it, false)

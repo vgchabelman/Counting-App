@@ -2,9 +2,12 @@ package com.cornershop.countertest.presentation.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import com.cornershop.countertest.domain.model.Counter
 import com.cornershop.countertest.domain.model.CounterListState
 import com.cornershop.countertest.domain.model.CounterSelectedState
@@ -15,6 +18,7 @@ import com.cornershop.countertest.presentation.databinding.ActivityMainBinding
 import com.cornershop.countertest.presentation.main.adapter.AdapterCounter
 import com.cornershop.countertest.presentation.main.adapter.AdapterSelected
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import xyz.quaver.floatingsearchview.FloatingSearchView
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
@@ -32,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         binding.addCounterButton.setOnClickListener {
             startActivity(Intent(this, CreateCounterActivity::class.java))
         }
+        setupSearch()
         setupSelectedMenu()
 
         observeState()
@@ -187,7 +192,11 @@ class MainActivity : AppCompatActivity() {
             val selectedList = state.data.filter { it.selected }
             var message = ""
             selectedList.forEach {
-                message += getString(R.string.n_per_counter_name, it.counter.count, it.counter.title) + "\n"
+                message += getString(
+                    R.string.n_per_counter_name,
+                    it.counter.count,
+                    it.counter.title
+                ) + "\n"
             }
             message.removeSuffix("\n")
 
@@ -225,7 +234,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSelectedMenu() {
-        binding.mainSelected.selectedToolbar.inflateMenu(R.menu.menu_main)
+        binding.mainSelected.selectedToolbar.inflateMenu(R.menu.menu_selection)
         binding.mainSelected.selectedToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.share -> {
@@ -246,5 +255,38 @@ class MainActivity : AppCompatActivity() {
         R.string.generic_error_description
     } else {
         R.string.connection_error_description
+    }
+
+    private fun setupSearch() {
+        binding.search.onQueryChangeListener = { _, query ->
+            val list = viewModel.searchResults(query)
+            adapterCounter.updateCounterList(list)0
+            binding.search.dimBackground = false
+        }
+        binding.search.onFocusChangeListener = object : FloatingSearchView.OnFocusChangeListener {
+            val  searchBind  = binding.search.binding
+            val querySectionParams =
+                FrameLayout.LayoutParams(searchBind.querySection.root.layoutParams)
+            val suggestionSectionParams =
+                LinearLayout.LayoutParams(searchBind.suggestionSection.root.layoutParams)
+
+            override fun onFocus() {
+                searchBind.querySection.root.updateLayoutParams<FrameLayout.LayoutParams> {
+                    setMargins(0, 0, 0, 0)
+                }
+                searchBind.suggestionSection.root.updateLayoutParams<LinearLayout.LayoutParams> {
+                    setMargins(0, 0, 0, 0)
+                }
+            }
+
+            override fun onFocusCleared() {
+                searchBind.querySection.root.updateLayoutParams<FrameLayout.LayoutParams> {
+                    querySectionParams
+                }
+                searchBind.suggestionSection.root.updateLayoutParams<LinearLayout.LayoutParams> {
+                    suggestionSectionParams
+                }
+            }
+        }
     }
 }

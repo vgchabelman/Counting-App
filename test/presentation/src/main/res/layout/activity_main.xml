@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
     <xyz.quaver.floatingsearchview.FloatingSearchView
         android:id="@+id/search"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_normal_1"
-        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:close_search_on_keyboard_dismiss="true"
         app:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:searchHint="Test"
-        app:showSearchKey="true" />
+        app:dismissOnOutsideTouch="true"
+        app:searchBarMarginLeft="@dimen/margin_normal_1"
+        app:searchBarMarginRight="@dimen/margin_normal_1"
+        app:searchBarMarginTop="8dp"
+        app:leftActionMode="showSearch"
+        app:searchHint="@string/search_hint" />
 
     <include
         android:id="@+id/mainNoCounters"
@@ -35,7 +37,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline2" />
 
-    <include android:id="@+id/mainSelected"
+    <include
+        android:id="@+id/mainSelected"
         layout="@layout/layout_main_select" />
 
     <include
@@ -57,5 +60,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="66dp" />
+        app:layout_constraintGuide_begin="74dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
