@@ -18,7 +18,6 @@
         app:searchBarMarginLeft="@dimen/margin_normal_1"
         app:searchBarMarginRight="@dimen/margin_normal_1"
         app:searchBarMarginTop="8dp"
-        app:leftActionMode="showSearch"
         app:searchHint="@string/search_hint" />
 
     <include

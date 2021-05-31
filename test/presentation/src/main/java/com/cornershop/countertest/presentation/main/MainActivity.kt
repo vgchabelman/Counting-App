@@ -7,6 +7,11 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
+import androidx.core.view.marginTop
+import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import com.cornershop.countertest.domain.model.Counter
 import com.cornershop.countertest.domain.model.CounterListState
@@ -260,17 +265,28 @@ class MainActivity : AppCompatActivity() {
     private fun setupSearch() {
         binding.search.onQueryChangeListener = { _, query ->
             val list = viewModel.searchResults(query)
-            adapterCounter.updateCounterList(list)0
+            adapterCounter.updateCounterList(list)
             binding.search.dimBackground = false
         }
+
+        val searchBind = binding.search.binding
+
         binding.search.onFocusChangeListener = object : FloatingSearchView.OnFocusChangeListener {
-            val  searchBind  = binding.search.binding
-            val querySectionParams =
-                FrameLayout.LayoutParams(searchBind.querySection.root.layoutParams)
-            val suggestionSectionParams =
-                LinearLayout.LayoutParams(searchBind.suggestionSection.root.layoutParams)
+            var querySectionMargins: Array<Int> = emptyArray()
+            var suggestionSectionParams: Array<Int> = emptyArray()
 
             override fun onFocus() {
+                if (querySectionMargins.isEmpty()) {
+                    searchBind.querySection.root.apply {
+                        querySectionMargins =
+                            arrayOf(marginLeft, marginTop, marginRight, marginBottom)
+                    }
+                    searchBind.suggestionSection.root.apply {
+                        suggestionSectionParams =
+                            arrayOf(marginLeft, marginTop, marginRight, marginBottom)
+                    }
+                }
+
                 searchBind.querySection.root.updateLayoutParams<FrameLayout.LayoutParams> {
                     setMargins(0, 0, 0, 0)
                 }
@@ -281,12 +297,27 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFocusCleared() {
                 searchBind.querySection.root.updateLayoutParams<FrameLayout.LayoutParams> {
-                    querySectionParams
+                    setMargins(
+                        querySectionMargins[0],
+                        querySectionMargins[1],
+                        querySectionMargins[2],
+                        querySectionMargins[3]
+                    )
                 }
                 searchBind.suggestionSection.root.updateLayoutParams<LinearLayout.LayoutParams> {
-                    suggestionSectionParams
+                    setMargins(
+                        suggestionSectionParams[0],
+                        suggestionSectionParams[1],
+                        suggestionSectionParams[2],
+                        suggestionSectionParams[3]
+                    )
                 }
             }
+        }
+
+        binding.search.onHomeActionClickListener = {
+            binding.search.dimBackground = true
+            adapterCounter.updateCounterList(viewModel.searchResults(""))
         }
     }
 }
