@@ -145,7 +145,10 @@ class MainActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(errorMessage(state.hasInternet))
-            .setPositiveButton(android.R.string.ok, null)
+            .setPositiveButton(R.string.dismiss, null)
+            .setNegativeButton(R.string.retry) { _, _ ->
+                viewModel.updateCounter(state.counter, state.increment)
+            }
             .create()
             .show()
     }
@@ -266,6 +269,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }
+        }
+        binding.mainSelected.selectedToolbar.setNavigationOnClickListener {
+            viewModel.cancelSelect()
         }
     }
     //endregion

@@ -12,6 +12,8 @@
         <item name="android:textColorTertiary">@color/light_gray</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorSecondary</item>
+
+        <item name="alertDialogTheme">@style/Theme.CountersNormal.AlertDialog</item>
     </style>
 
     <style name="Theme.CountersWelcome" parent="Theme.CountersNormal">
@@ -40,5 +42,8 @@
         <item name="cornerRadius">40dp</item>
     </style>
 
-
+    <style name="Theme.CountersNormal.AlertDialog" parent="Theme.CountersNormal">
+        <item name="android:colorAccent">@color/orange</item>
+        <item name="colorOnSurface">@color/orange</item>
+    </style>
 </resources>
