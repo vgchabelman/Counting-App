@@ -12,6 +12,7 @@ import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 import androidx.core.view.updateLayoutParams
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cornershop.countertest.domain.model.Counter
 import com.cornershop.countertest.domain.model.CounterListState
 import com.cornershop.countertest.domain.model.CounterSelectedState
@@ -42,7 +43,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, CreateCounterActivity::class.java))
         }
         setupSearch()
-        setupSwipeRefresh()
+
+        setupSwipeRefresh(binding.mainCounter.mainCounterSwipe)
+        setupSwipeRefresh(binding.mainNoCounters.swipe)
+        setupSwipeRefresh(binding.mainError.swipe)
+        binding.mainError.retryButton.setOnClickListener { viewModel.updateCounterList() }
+
         setupSelectedMenu()
 
         observeState()
@@ -117,6 +123,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleErrorState() {
         binding.mainLoading.loading.hide()
+        binding.mainError.swipe.isRefreshing = false
         binding.mainError.root.isVisible = true
         binding.mainNoCounters.root.isVisible = false
         binding.mainCounter.mainCounterSwipe.isVisible = false
@@ -325,8 +332,8 @@ class MainActivity : AppCompatActivity() {
     }
     //endregion
 
-    private fun setupSwipeRefresh() {
-        binding.mainCounter.mainCounterSwipe.apply {
+    private fun setupSwipeRefresh(swipe: SwipeRefreshLayout) {
+        swipe.apply {
             setOnRefreshListener {
                 viewModel.updateCounterList()
             }
