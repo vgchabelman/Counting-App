@@ -24,4 +24,8 @@ class CounterUseCase(private val repository: ICounterRepository) {
             repository.deleteCounter(counter)
         }
     }
+
+    fun filterSearchResult(counterList: List<Counter>, query: String): List<Counter> {
+        return counterList.filter { it.title.contains(query, true) }
+    }
 }

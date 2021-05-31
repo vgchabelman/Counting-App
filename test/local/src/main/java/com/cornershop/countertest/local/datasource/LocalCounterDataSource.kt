@@ -23,15 +23,23 @@ class LocalCounterDataSource(
     }
 
     override suspend fun increment(counter: Counter): List<Counter> {
-        val entity = counterDao.getCounter(counter.id)
-        entity.count++
+        var entity = counterDao.getCounter(counter.id)
+        if (entity == null) {
+            addCounter(counter)
+            entity = counterDao.getCounter(counter.id)
+        }
+        entity!!.count++
         counterDao.update(entity)
         return getCounters()
     }
 
     override suspend fun decrement(counter: Counter): List<Counter> {
-        val entity = counterDao.getCounter(counter.id)
-        entity.count--
+        var entity = counterDao.getCounter(counter.id)
+        if (entity == null) {
+            addCounter(counter)
+            entity = counterDao.getCounter(counter.id)
+        }
+        entity!!.count--
         counterDao.update(entity)
         return getCounters()
     }
