@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, CreateCounterActivity::class.java))
         }
         setupSearch()
+        setupSwipeRefresh()
         setupSelectedMenu()
 
         observeState()
@@ -91,6 +92,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleDataState(state: CounterListState.DataState) {
         binding.mainLoading.loading.hide()
+        binding.mainCounter.mainCounterSwipe.isRefreshing = false
         binding.mainError.root.isVisible = false
 
         if (state.data.isEmpty()) {
@@ -322,6 +324,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
     //endregion
+
+    private fun setupSwipeRefresh() {
+        binding.mainCounter.mainCounterSwipe.apply {
+            setOnRefreshListener {
+                viewModel.updateCounterList()
+            }
+            setColorSchemeResources(R.color.orange)
+        }
+    }
 
     private fun errorMessage(hasInternet: Boolean): Int = if (hasInternet) {
         R.string.generic_error_description
