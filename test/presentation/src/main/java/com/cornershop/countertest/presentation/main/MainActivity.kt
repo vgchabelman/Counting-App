@@ -13,7 +13,6 @@ import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 import androidx.core.view.updateLayoutParams
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.cornershop.countertest.domain.model.Counter
 import com.cornershop.countertest.domain.model.CounterListState
 import com.cornershop.countertest.domain.model.CounterSelectedState
 import com.cornershop.countertest.domain.model.CounterUpdateState
@@ -24,7 +23,6 @@ import com.cornershop.countertest.presentation.main.adapter.AdapterCounter
 import com.cornershop.countertest.presentation.main.adapter.AdapterSelected
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import xyz.quaver.floatingsearchview.FloatingSearchView
-import xyz.quaver.floatingsearchview.suggestions.model.SearchSuggestion
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
