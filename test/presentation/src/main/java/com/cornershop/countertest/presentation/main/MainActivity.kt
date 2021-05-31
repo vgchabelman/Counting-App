@@ -11,7 +11,6 @@ import androidx.core.view.marginBottom
 import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
-import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import com.cornershop.countertest.domain.model.Counter
 import com.cornershop.countertest.domain.model.CounterListState
@@ -58,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.counterListState.observe(this) { state ->
             when (state) {
                 is CounterListState.LoadingState -> handleLoadingState()
-                is CounterListState.DataState -> handleDataState(state.data)
+                is CounterListState.DataState -> handleDataState(state)
                 is CounterListState.ErrorState -> handleErrorState()
             }
         }
@@ -86,27 +85,32 @@ class MainActivity : AppCompatActivity() {
         binding.mainLoading.loading.show()
         binding.mainNoCounters.root.isVisible = false
         binding.mainCounter.mainCounterSwipe.isVisible = false
+        binding.mainSearch.noResults.isVisible = false
         binding.mainError.root.isVisible = false
     }
 
-    private fun handleDataState(counters: List<Counter>) {
+    private fun handleDataState(state: CounterListState.DataState) {
         binding.mainLoading.loading.hide()
         binding.mainError.root.isVisible = false
 
-        if (counters.isEmpty()) {
-            binding.mainNoCounters.root.isVisible = true
-            binding.mainCounter.mainCounterSwipe.isVisible = false
+        if (state.data.isEmpty()) {
+            if (state.isSearching) {
+                binding.mainSearch.noResults.isVisible = true
+            } else {
+                binding.mainNoCounters.root.isVisible = true
+            }
             return
         }
+        val filteredList = viewModel.filterResults(state.data)
         binding.mainNoCounters.root.isVisible = false
         binding.mainCounter.mainCounterSwipe.isVisible = true
-        binding.mainCounter.counterCount.text = getString(R.string.n_items, counters.size)
+        binding.mainCounter.counterCount.text = getString(R.string.n_items, filteredList.size)
         binding.mainCounter.counterSum.text =
-            getString(R.string.n_times, counters.sumBy { it.count })
+            getString(R.string.n_times, filteredList.sumBy { it.count })
         if (binding.mainCounter.mainCounterList.adapter !is AdapterCounter) {
             binding.mainCounter.mainCounterList.adapter = adapterCounter
         }
-        adapterCounter.updateCounterList(counters)
+        adapterCounter.updateCounterList(filteredList)
     }
 
     private fun handleErrorState() {
@@ -146,8 +150,8 @@ class MainActivity : AppCompatActivity() {
             .animate()
             .translationY(binding.addCounterButton.height * 3f)
             .start()
-        binding.search.animate()
-            .translationY(binding.search.height * -3f)
+        binding.mainSearch.search.animate()
+            .translationY(binding.mainSearch.search.height * -3f)
             .start()
         binding.mainSelected.selectedToolbar.title = getString(R.string.n_selected, 1)
         adapterSelected.updateCounterList(state.data)
@@ -164,7 +168,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleSelectedSuccessState() {
         binding.mainSelected.root.isVisible = false
         binding.addCounterButton.animate().translationY(0f).start()
-        binding.search.animate().translationY(0f).start()
+        binding.mainSearch.search.animate().translationY(0f).start()
         viewModel.updateCounterList()
     }
 
@@ -257,34 +261,18 @@ class MainActivity : AppCompatActivity() {
     }
     //endregion
 
-    private fun errorMessage(hasInternet: Boolean): Int = if (hasInternet) {
-        R.string.generic_error_description
-    } else {
-        R.string.connection_error_description
-    }
-
+    //region Search
     private fun setupSearch() {
-        binding.search.onQueryChangeListener = { _, query ->
-            val list = viewModel.searchResults(query)
-            adapterCounter.updateCounterList(list)
-            binding.search.dimBackground = false
+        binding.mainSearch.search.onQueryChangeListener = { _, query ->
+            viewModel.searchResults(query)
+            binding.mainSearch.search.dimBackground = false
         }
 
-        binding.search.onFocusChangeListener = searchSizeChange()
-
-        binding.search.onSearchListener = object : FloatingSearchView.OnSearchListener {
-            override fun onSearchAction(currentQuery: String?) {
-                binding.search.dimBackground = true
-                adapterCounter.updateCounterList(viewModel.searchResults(""))
-            }
-
-            override fun onSuggestionClicked(searchSuggestion: SearchSuggestion?) {
-            }
-        }
+        binding.mainSearch.search.onFocusChangeListener = searchSizeChange()
     }
 
     private fun searchSizeChange(): FloatingSearchView.OnFocusChangeListener {
-        val searchBind = binding.search.binding
+        val searchBind = binding.mainSearch.search.binding
 
         return object : FloatingSearchView.OnFocusChangeListener {
             var querySectionMargins: Array<Int> = emptyArray()
@@ -327,10 +315,17 @@ class MainActivity : AppCompatActivity() {
                         suggestionSectionParams[3]
                     )
                 }
-                binding.search.clearQuery()
-                adapterCounter.updateCounterList(viewModel.searchResults(""))
                 searchBind.querySection.leftAction.setImageDrawable(null)
+                binding.mainSearch.search.clearQuery()
+                viewModel.clearSearch()
             }
         }
+    }
+    //endregion
+
+    private fun errorMessage(hasInternet: Boolean): Int = if (hasInternet) {
+        R.string.generic_error_description
+    } else {
+        R.string.connection_error_description
     }
 }

@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <xyz.quaver.floatingsearchview.FloatingSearchView
-        android:id="@+id/search"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:elevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:dismissOnOutsideTouch="true"
-        app:searchBarMarginLeft="@dimen/margin_normal_1"
-        app:searchBarMarginRight="@dimen/margin_normal_1"
-        app:searchBarMarginTop="8dp"
-        app:showSearchKey="false"
-        app:leftActionMode="noLeftAction"
-        app:searchHint="@string/search_hint" />
+    <include android:id="@+id/mainSearch"
+        layout="@layout/layout_main_search" />
 
     <include
         android:id="@+id/mainNoCounters"

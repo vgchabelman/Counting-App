@@ -30,13 +30,17 @@ class MainViewModel(
         get() = _selectedState
     private val _selectedState: MutableLiveData<CounterSelectedState> = MutableLiveData()
 
-    fun updateCounterList() {
+    private var searchQuery: String = ""
+
+    fun updateCounterList(isSearching: Boolean = false, showLoading: Boolean = true) {
         viewModelScope.launch(Dispatchers.IO) {
-            _counterListState.postValue(CounterListState.LoadingState)
+            if (showLoading) {
+                _counterListState.postValue(CounterListState.LoadingState)
+            }
 
             try {
                 val list = useCase.getAllCounters()
-                _counterListState.postValue(CounterListState.DataState(list))
+                _counterListState.postValue(CounterListState.DataState(list, isSearching))
             } catch (e: NoInternetException) {
                 _counterListState.postValue(CounterListState.ErrorState(false))
             } catch (e: Exception) {
@@ -54,7 +58,12 @@ class MainViewModel(
                     useCase.decrementCounter(counter)
                 }
 
-                _counterListState.postValue(CounterListState.DataState(list))
+                _counterListState.postValue(
+                    CounterListState.DataState(
+                        list,
+                        searchQuery.isNotBlank()
+                    )
+                )
             } catch (e: NoInternetException) {
                 _counterUpdateState.postValue(
                     CounterUpdateState.ErrorState(
@@ -72,10 +81,10 @@ class MainViewModel(
     }
 
     fun changeStateToSelect(counter: Counter) {
-        val counterList =
-            (counterListState.value as CounterListState.DataState).data.toCounterView()
-        counterList.find { it.counter.id == counter.id }?.selected = true
-        _selectedState.postValue(CounterSelectedState.ChangeState(counterList))
+        val counterList = (counterListState.value as CounterListState.DataState).data
+        val counterViewList = useCase.filterSearchResult(counterList, searchQuery).toCounterView()
+        counterViewList.find { it.counter.id == counter.id }?.selected = true
+        _selectedState.postValue(CounterSelectedState.ChangeState(counterViewList))
     }
 
     fun selectCounter(counter: Counter) {
@@ -113,8 +122,10 @@ class MainViewModel(
                 useCase.deleteCounters(selectedList.filter { it.selected }.toCounter())
                 _selectedState.postValue(CounterSelectedState.SuccessState)
             } catch (e: NoInternetException) {
-                _selectedState.postValue(CounterSelectedState
-                    .DeleteErrorState(selectedList, false))
+                _selectedState.postValue(
+                    CounterSelectedState
+                        .DeleteErrorState(selectedList, false)
+                )
             } catch (e: Exception) {
                 _selectedState.postValue(CounterSelectedState.DeleteErrorState(selectedList))
                 Log.e("CounterError", e.message.toString())
@@ -139,9 +150,18 @@ class MainViewModel(
         }
     }
 
-    fun searchResults(query: String): List<Counter> {
-        val list = (_counterListState.value as CounterListState.DataState).data
-        return list.filter { it.title.contains(query, true) }
+    fun filterResults(list: List<Counter>): List<Counter> {
+        return useCase.filterSearchResult(list, searchQuery)
+    }
+
+    fun searchResults(query: String) {
+        searchQuery = query
+        updateCounterList(isSearching = true, showLoading = false)
+    }
+
+    fun clearSearch() {
+        searchQuery = ""
+        updateCounterList(showLoading = false)
     }
 
     private fun List<Counter>.toCounterView(): List<CounterView> {
