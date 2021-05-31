@@ -12,7 +12,7 @@ import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 import androidx.core.view.updateLayoutParams
-import com.cornershop.countertest.domain.model.Counter
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cornershop.countertest.domain.model.CounterListState
 import com.cornershop.countertest.domain.model.CounterSelectedState
 import com.cornershop.countertest.domain.model.CounterUpdateState
@@ -23,7 +23,6 @@ import com.cornershop.countertest.presentation.main.adapter.AdapterCounter
 import com.cornershop.countertest.presentation.main.adapter.AdapterSelected
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import xyz.quaver.floatingsearchview.FloatingSearchView
-import xyz.quaver.floatingsearchview.suggestions.model.SearchSuggestion
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
@@ -42,6 +41,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, CreateCounterActivity::class.java))
         }
         setupSearch()
+
+        setupSwipeRefresh(binding.mainCounter.mainCounterSwipe)
+        setupSwipeRefresh(binding.mainNoCounters.swipe)
+        setupSwipeRefresh(binding.mainError.swipe)
+        binding.mainError.retryButton.setOnClickListener { viewModel.updateCounterList() }
+
         setupSelectedMenu()
 
         observeState()
@@ -91,6 +96,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleDataState(state: CounterListState.DataState) {
         binding.mainLoading.loading.hide()
+        binding.mainCounter.mainCounterSwipe.isRefreshing = false
         binding.mainError.root.isVisible = false
 
         if (state.data.isEmpty()) {
@@ -115,6 +121,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleErrorState() {
         binding.mainLoading.loading.hide()
+        binding.mainError.swipe.isRefreshing = false
         binding.mainError.root.isVisible = true
         binding.mainNoCounters.root.isVisible = false
         binding.mainCounter.mainCounterSwipe.isVisible = false
@@ -136,7 +143,10 @@ class MainActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(errorMessage(state.hasInternet))
-            .setPositiveButton(android.R.string.ok, null)
+            .setPositiveButton(R.string.dismiss, null)
+            .setNegativeButton(R.string.retry) { _, _ ->
+                viewModel.updateCounter(state.counter, state.increment)
+            }
             .create()
             .show()
     }
@@ -258,6 +268,9 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+        binding.mainSelected.selectedToolbar.setNavigationOnClickListener {
+            viewModel.cancelSelect()
+        }
     }
     //endregion
 
@@ -322,6 +335,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
     //endregion
+
+    private fun setupSwipeRefresh(swipe: SwipeRefreshLayout) {
+        swipe.apply {
+            setOnRefreshListener {
+                viewModel.updateCounterList()
+            }
+            setColorSchemeResources(R.color.orange)
+        }
+    }
 
     private fun errorMessage(hasInternet: Boolean): Int = if (hasInternet) {
         R.string.generic_error_description

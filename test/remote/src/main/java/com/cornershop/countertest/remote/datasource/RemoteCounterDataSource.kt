@@ -8,12 +8,15 @@ import com.cornershop.countertest.remote.dto.CreateCounterRequestDto
 import com.cornershop.countertest.remote.mapper.toCounter
 import com.cornershop.countertest.remote.service.CounterServiceApi
 import retrofit2.HttpException
+import java.net.ConnectException
 
-class RemoteCounterDataSource(private val api: CounterServiceApi): ICounterDataSource {
+class RemoteCounterDataSource(private val api: CounterServiceApi) : ICounterDataSource {
     override suspend fun getCounters(): List<Counter> {
         try {
             return api.getCounters().map { it.toCounter() }
-        } catch (e:  HttpException) {
+        } catch (e: HttpException) {
+            throw NoInternetException()
+        } catch (e: ConnectException) {
             throw NoInternetException()
         }
     }
@@ -21,7 +24,9 @@ class RemoteCounterDataSource(private val api: CounterServiceApi): ICounterDataS
     override suspend fun addCounter(counter: Counter): List<Counter> {
         try {
             return api.addCounter(CreateCounterRequestDto(counter.title)).map { it.toCounter() }
-        } catch (e:  HttpException) {
+        } catch (e: HttpException) {
+            throw NoInternetException()
+        } catch (e: ConnectException) {
             throw NoInternetException()
         }
     }
@@ -29,7 +34,9 @@ class RemoteCounterDataSource(private val api: CounterServiceApi): ICounterDataS
     override suspend fun increment(counter: Counter): List<Counter> {
         try {
             return api.increment(CounterRequestDto(counter.id)).map { it.toCounter() }
-        } catch (e:  HttpException) {
+        } catch (e: HttpException) {
+            throw NoInternetException()
+        } catch (e: ConnectException) {
             throw NoInternetException()
         }
     }
@@ -37,7 +44,9 @@ class RemoteCounterDataSource(private val api: CounterServiceApi): ICounterDataS
     override suspend fun decrement(counter: Counter): List<Counter> {
         try {
             return api.decrement(CounterRequestDto(counter.id)).map { it.toCounter() }
-        } catch (e:  HttpException) {
+        } catch (e: HttpException) {
+            throw NoInternetException()
+        } catch (e: ConnectException) {
             throw NoInternetException()
         }
     }
@@ -45,7 +54,9 @@ class RemoteCounterDataSource(private val api: CounterServiceApi): ICounterDataS
     override suspend fun removeCounter(counter: Counter): List<Counter> {
         try {
             return api.removeCounter(CounterRequestDto(counter.id)).map { it.toCounter() }
-        } catch (e:  HttpException) {
+        } catch (e: HttpException) {
+            throw NoInternetException()
+        } catch (e: ConnectException) {
             throw NoInternetException()
         }
     }

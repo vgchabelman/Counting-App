@@ -150,6 +150,10 @@ class MainViewModel(
         }
     }
 
+    fun cancelSelect() {
+        _selectedState.postValue(CounterSelectedState.SuccessState)
+    }
+
     fun filterResults(list: List<Counter>): List<Counter> {
         return useCase.filterSearchResult(list, searchQuery)
     }

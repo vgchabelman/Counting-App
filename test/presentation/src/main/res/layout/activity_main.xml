@@ -1,52 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:background="@color/white">
 
-    <include android:id="@+id/mainSearch"
-        layout="@layout/layout_main_search" />
-
-    <include
-        android:id="@+id/mainNoCounters"
-        layout="@layout/layout_main_no_counters" />
-
-    <include
-        android:id="@+id/mainError"
-        layout="@layout/layout_main_error" />
-
-    <include
-        android:id="@+id/mainCounter"
-        layout="@layout/layout_main_counter_list"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline2" />
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-    <include
-        android:id="@+id/mainSelected"
-        layout="@layout/layout_main_select" />
+        <include
+            android:id="@+id/mainSearch"
+            layout="@layout/layout_main_search" />
 
-    <include
-        android:id="@+id/mainLoading"
-        layout="@layout/layout_main_loading" />
+        <include
+            android:id="@+id/mainNoCounters"
+            layout="@layout/layout_main_no_counters" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/addCounterButton"
-        style="@style/Theme.CountersNormal.Cta"
-        android:layout_marginBottom="@dimen/margin_normal_2"
-        android:text="@string/add_counter"
-        app:icon="@drawable/ic_plus"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <include
+            android:id="@+id/mainError"
+            layout="@layout/layout_main_error" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="74dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <include
+            android:id="@+id/mainCounter"
+            layout="@layout/layout_main_counter_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline2" />
+
+        <include
+            android:id="@+id/mainSelected"
+            layout="@layout/layout_main_select" />
+
+        <include
+            android:id="@+id/mainLoading"
+            layout="@layout/layout_main_loading" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addCounterButton"
+            style="@style/Theme.CountersNormal.Cta"
+            android:layout_marginBottom="@dimen/margin_normal_2"
+            android:text="@string/add_counter"
+            app:icon="@drawable/ic_plus"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="74dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
