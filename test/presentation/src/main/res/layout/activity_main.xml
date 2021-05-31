@@ -9,7 +9,6 @@
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:close_search_on_keyboard_dismiss="true"
         app:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,6 +17,8 @@
         app:searchBarMarginLeft="@dimen/margin_normal_1"
         app:searchBarMarginRight="@dimen/margin_normal_1"
         app:searchBarMarginTop="8dp"
+        app:showSearchKey="false"
+        app:leftActionMode="noLeftAction"
         app:searchHint="@string/search_hint" />
 
     <include

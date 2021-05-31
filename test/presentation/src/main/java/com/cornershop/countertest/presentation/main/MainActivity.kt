@@ -24,6 +24,7 @@ import com.cornershop.countertest.presentation.main.adapter.AdapterCounter
 import com.cornershop.countertest.presentation.main.adapter.AdapterSelected
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import xyz.quaver.floatingsearchview.FloatingSearchView
+import xyz.quaver.floatingsearchview.suggestions.model.SearchSuggestion
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
@@ -269,9 +270,23 @@ class MainActivity : AppCompatActivity() {
             binding.search.dimBackground = false
         }
 
+        binding.search.onFocusChangeListener = searchSizeChange()
+
+        binding.search.onSearchListener = object : FloatingSearchView.OnSearchListener {
+            override fun onSearchAction(currentQuery: String?) {
+                binding.search.dimBackground = true
+                adapterCounter.updateCounterList(viewModel.searchResults(""))
+            }
+
+            override fun onSuggestionClicked(searchSuggestion: SearchSuggestion?) {
+            }
+        }
+    }
+
+    private fun searchSizeChange(): FloatingSearchView.OnFocusChangeListener {
         val searchBind = binding.search.binding
 
-        binding.search.onFocusChangeListener = object : FloatingSearchView.OnFocusChangeListener {
+        return object : FloatingSearchView.OnFocusChangeListener {
             var querySectionMargins: Array<Int> = emptyArray()
             var suggestionSectionParams: Array<Int> = emptyArray()
 
@@ -312,12 +327,10 @@ class MainActivity : AppCompatActivity() {
                         suggestionSectionParams[3]
                     )
                 }
+                binding.search.clearQuery()
+                adapterCounter.updateCounterList(viewModel.searchResults(""))
+                searchBind.querySection.leftAction.setImageDrawable(null)
             }
-        }
-
-        binding.search.onHomeActionClickListener = {
-            binding.search.dimBackground = true
-            adapterCounter.updateCounterList(viewModel.searchResults(""))
         }
     }
 }
