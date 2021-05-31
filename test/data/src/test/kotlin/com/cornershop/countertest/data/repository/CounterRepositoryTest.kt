@@ -75,4 +75,40 @@ class CounterRepositoryTest {
             Assert.assertEquals(remoteMockDataSource.mockList, localMockDataSource.mockList)
         }
     }
+
+    @Test
+    fun `it should increment Counter count on both local and remote`() {
+        runBlockingTest {
+            val counter = Counter("test", "test", 0)
+            localMockDataSource.mockList.add(counter)
+            remoteMockDataSource.mockList.add(counter)
+            repository.incrementCounter(counter)
+            Assert.assertEquals(1, localMockDataSource.mockList[0].count)
+            Assert.assertEquals(1, remoteMockDataSource.mockList[0].count)
+        }
+    }
+
+    @Test
+    fun `it should decrement Counter count on both local and remote`() {
+        runBlockingTest {
+            val counter = Counter("test", "test", 2)
+            localMockDataSource.mockList.add(counter)
+            remoteMockDataSource.mockList.add(counter)
+            repository.decrementCounter(counter)
+            Assert.assertEquals(1, localMockDataSource.mockList[0].count)
+            Assert.assertEquals(1, remoteMockDataSource.mockList[0].count)
+        }
+    }
+
+    @Test
+    fun `it should delete Counter count on both local and remote`() {
+        runBlockingTest {
+            val counter = Counter("test", "test", 0)
+            localMockDataSource.mockList.add(counter)
+            remoteMockDataSource.mockList.add(counter)
+            repository.deleteCounter(counter)
+            Assert.assertTrue(localMockDataSource.mockList.isEmpty())
+            Assert.assertTrue(remoteMockDataSource.mockList.isEmpty())
+        }
+    }
 }
