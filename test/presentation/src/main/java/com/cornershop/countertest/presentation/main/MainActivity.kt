@@ -313,6 +313,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFocusCleared() {
                 searchBind.querySection.root.updateLayoutParams<FrameLayout.LayoutParams> {
+                    if (querySectionMargins.isEmpty()) return@updateLayoutParams
                     setMargins(
                         querySectionMargins[0],
                         querySectionMargins[1],
@@ -321,6 +322,7 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
                 searchBind.suggestionSection.root.updateLayoutParams<LinearLayout.LayoutParams> {
+                    if (suggestionSectionParams.isEmpty()) return@updateLayoutParams
                     setMargins(
                         suggestionSectionParams[0],
                         suggestionSectionParams[1],

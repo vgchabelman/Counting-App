@@ -1,120 +1,55 @@
 # Cornershop Android Development Test
 
-## Before you begin
-You will need to fork this repo and use `/test` as a template, in there you already have all the resources (colors, strings, dimens, etc.), please make sure you read and understand all the requirements in this README. When you finish your test, add your recruiter to your fork and let them know you are done.
-
-If you have any questions, please reach your recruiter, specially if they are related to UI design.
-
-## The test
-Create an Android app for counting things. You'll need to meet high expectations for quality and functionality. It must meet at least the following:
-
-* **States are crucial**, you must handle each state transition properly
-* Add a named counter to a list of counters.
-* Increment any of the counters.
-* Decrement any of the counters.
-* Delete a counter.
-* Show a sum of all the counter values.
-* Search counters.
-* Enable sharing counters.
-* Handle batch deletion.
-* Unreliable networks are a thing. State management and error handling is **important**.
-* Persist data back to the server.
-* Must **not** feel like a learning exercise. Think you're building it to publish for the Google Play Store.
-
-#### Build this app using the following spec: https://www.figma.com/file/qBcG5Poxunyct1HEyvERXN/Counters-for-Android
-
-Some other important notes:
-
-* Showing off the knowledge of mobile architectures is essential.
-* Offer support to Android API >= 21.
-* We expect at least some Unit tests.
-* The app should persist the counter list if the network is not available (i.e Airplane Mode).
-* Create incremental commits instead of a single commit with the whole project
-* **Test your app to the latest Android API**
-
-Bonus points:
-* Avoid God activities/fragments.
-* Minimal use of external dependencies.
-* Handle orientation changes.
-
-
-**Remember**: The UI is super important. Don't build anything that doesn't feel right for Android.
-
-
-## Install and start the server
-
+## How to run
+App built using Android Studio 4.2.1
+No special configurations necessary, runs on Android Emulators running version 5+.
+Just install the server and run beforehand
 ```
 $ npm install
 $ npm start
 ```
 
-## API endpoints / examples
+## The test
+App for counting things in general. Setup to work with localhost on Android emulators.
 
-> The following endpoints are expecting a `Content-Type: application/json`
+Features:
+- Creating and deleting new counters.
+- Updating the counters.
+- Seeing your counters offline.
+- Sharing a counter list.
+- Delete multiple counters at once.
 
+## The code
+
+### Project Architecture
+Built using Clean Architecture in mind, app uses model States to control the UI, as per the MVI pattern. 
+Explanation of each layer:
+- App: Knows all other layers, applies DataInjection through Koin.
+- Presentation: Holds the UI of the app, also handling state changes through ViewModel classes. Activities observe LiveData objects of the possible States and react accordingly.
+- Domain: Pure Kotlin module, is known by every other layer. Holds the Counter model and the other Counter States. Use cases handle bussiness logic.
+- Data: Layer handling repository pattern. Implements interfaces found on Domain and handle getting data from api or cache.
+- Remote: Holds DTOs for the API calls and transform them back to Counters. Remote access is done through Retrofit.
+- Local: Uses Room to hold data for offline access. 
+All asynchronous calls use Coroutines for simplicity. 
+
+### Libraries used
+- Requests: [Retrofit](https://square.github.io/retrofit/)
+- Persistance Storage: [Room](https://developer.android.com/jetpack/androidx/releases/room)
+- Dependecy Injection: [Koin](https://insert-koin.io/)
+- Unit Tests: [JUnit 4](https://junit.org/junit4/javadoc/latest/overview-summary.html)
+- Mocking Tests: [Mockito Kotlin 2](https://mvnrepository.com/artifact/com.nhaarman.mockitokotlin2/mockito-kotlin)
+- Custom SearchView: [Floating Search View: ](https://github.com/tom5079/FloatingSearchView)
+
+## Automated Tests
+For convenience, fastlane is added to the project. Just go to android project root folder and run
 ```
-GET /api/v1/counters
-# []
-
-POST /api/v1/counter
-Request Body: 
-# {title: "bob"}
-
-Response Body:
-# [
-#   {id: "asdf", title: "bob", count: 0}
-# ]
-
-
-POST /api/v1/counter
-Request Body: 
-# {title: "steve"}
-
-Response Body:
-# [
-#   {id: "asdf", title: "bob", count: 0},
-#   {id: "qwer", title: "steve", count: 0}
-# ]
-
-
-POST /api/v1/counter/inc
-Request Body: 
-# {id: "asdf"}
-
-Response Body:
-# [
-#   {id: "asdf", title: "bob", count: 1},
-#   {id: "qwer", title: "steve", count: 0}
-# ]
-
-
-POST /api/v1/counter/dec
-Request Body:
-# {id: "qwer"}
-
-Response Body:
-# [
-#   {id: "asdf", title: "bob", count: 1},
-#   {id: "qwer", title: "steve", count: 2}
-# ]
-
-
-DELETE /api/v1/counter
-Request Body:
-# {id: "qwer"}
-
-Response Body:
-# [
-#   {id: "asdf", title: "bob", count: 1}
-# ]
-
-
-GET /api/v1/counters
-Response Body:
-# [
-#   {id: "asdf", title: "bob", count: 1},
-# ]
+$ bundle install
+$ bundle exec fastlane test
+```
+Or try
+```
+$ ./gradlew test
 ```
 
-> **NOTE:* Each request returns the current state of all counters.
-
+## What comes next
+Check out the [Projects](https://github.com/vgchabelman/Counting-App/projects) tab in GitHub to see the project next steps
