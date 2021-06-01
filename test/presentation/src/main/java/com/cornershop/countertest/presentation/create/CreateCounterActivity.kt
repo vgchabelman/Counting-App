@@ -23,6 +23,7 @@ class CreateCounterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.saveButton.setOnClickListener {
+            if (verifyNameIsEmpty()) return@setOnClickListener
             viewModel.saveCounter(binding.title.text.toString())
         }
         binding.examplesButton.setOnClickListener {
@@ -76,5 +77,15 @@ class CreateCounterActivity : AppCompatActivity() {
             .setPositiveButton(android.R.string.ok, null)
             .create()
             .show()
+    }
+
+    private fun verifyNameIsEmpty(): Boolean {
+        if (binding.title.text?.isNotBlank() == true) {
+            binding.textInputLayout.error = null
+            return false
+        }
+
+        binding.textInputLayout.error = getString(R.string.empty_name_error)
+        return true
     }
 }
