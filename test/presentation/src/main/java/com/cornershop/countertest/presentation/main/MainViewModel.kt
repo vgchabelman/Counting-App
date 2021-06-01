@@ -1,6 +1,7 @@
 package com.cornershop.countertest.presentation.main
 
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,20 +21,24 @@ class MainViewModel(
 ) : ViewModel() {
     val counterListState: LiveData<CounterListState>
         get() = _counterListState
-    private val _counterListState: MutableLiveData<CounterListState> = MutableLiveData()
+    @VisibleForTesting
+    internal val _counterListState: MutableLiveData<CounterListState> = MutableLiveData()
 
     val counterUpdateState: LiveData<CounterUpdateState>
         get() = _counterUpdateState
-    private val _counterUpdateState: MutableLiveData<CounterUpdateState> = MutableLiveData()
+    @VisibleForTesting
+    internal val _counterUpdateState: MutableLiveData<CounterUpdateState> = MutableLiveData()
 
     val selectedState: LiveData<CounterSelectedState>
         get() = _selectedState
-    private val _selectedState: MutableLiveData<CounterSelectedState> = MutableLiveData()
+    @VisibleForTesting
+    internal val _selectedState: MutableLiveData<CounterSelectedState> = MutableLiveData()
 
-    private var searchQuery: String = ""
+    @VisibleForTesting
+    internal var searchQuery: String = ""
 
     fun updateCounterList(isSearching: Boolean = false, showLoading: Boolean = true) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             if (showLoading) {
                 _counterListState.postValue(CounterListState.LoadingState)
             }
@@ -50,7 +55,7 @@ class MainViewModel(
     }
 
     fun updateCounter(counter: Counter, increment: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try {
                 val list = if (increment) {
                     useCase.incrementCounter(counter)

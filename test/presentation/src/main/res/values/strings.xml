@@ -56,4 +56,5 @@
     <string name="add_counter">ADD COUNTER</string>
     <string name="close_button_description">Close button</string>
     <string name="search_hint">Search Counters</string>
+    <string name="empty_name_error">Name cannot be empty</string>
 </resources>
